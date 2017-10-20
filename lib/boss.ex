@@ -27,7 +27,7 @@ defmodule Boss do
                 
                 n_list = Enum.to_list 1..numNodes
                 nodeid_list = Enum.map(n_list, fn(x) -> String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
-                IO.puts nodeid_list[1]
+                IO.inspect ( Enum.at(nodeid_list,0))
                 
                 
                 #rstring = "This is the first rumour"
