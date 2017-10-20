@@ -8,7 +8,7 @@ defmodule PastrySupervisor do
     end
     def init({nodes,requests}) do
         n_list = Enum.to_list 1..nodes
-        children = Enum.map(n_list, fn(x)->worker(PastryNode, [x,requests], [id: "node#{x}"]) end)
+        children = Enum.map(n_list, fn(x)->worker(PastryNode, [x,nodes,requests], [id: "node#{x}"]) end)
         supervise children, strategy: :one_for_one
     end
 end
