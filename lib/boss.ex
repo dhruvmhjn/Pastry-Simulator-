@@ -4,19 +4,16 @@ defmodule Boss do
     end
     defp parse_args(args) do
         cmdarg = OptionParser.parse(args)
-        {[],[numNodes,topology,algorithm],[]} = cmdarg
-        numInt = String.to_integer(numNodes)
-        #IO.puts "#{inspect(self)}"
+        {[],[numNodes,numRequests],[]} = cmdarg
+        numNodesInt = String.to_integer(numNodes)
+        numRequestsInt = String.to_integer(numRequests)
+
+        #Register yourself
         Process.register(self(),:boss)
         
-        #Code to Round OFF
-        numInt = cond do
-            (topology == "2D") || (topology =="imp2D") -> round(:math.pow(Float.ceil(:math.sqrt(numInt)),2))
-            true -> numInt
-        end
+        ApplicationSupervisor.start_link([numNodesInt,numRequestsInt])
         
-        ApplicationSupervisor.start_link([numInt,topology,algorithm])
-        boss_receiver(topology,nil,numInt)
+        boss_receiver(numNodesInt,numRequestsInt,nil)
     end
             
     def boss_receiver(topology,a,numInt) do
