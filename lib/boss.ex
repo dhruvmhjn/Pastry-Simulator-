@@ -22,12 +22,12 @@ defmodule Boss do
                 IO.puts "Time in MilliSeconds: #{b-a}"
                 :init.stop
             {:nodes_created} ->
-                rstring = "This is the first rumour"
+                #rstring = "This is the first rumour"
                 IO.puts "Nodes created, netwoek init started"
                 
                 n_list = Enum.to_list 1..numNodes
                 nodeid_list = Enum.map(n_list, fn(x) -> String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
-                IO.puts nodeid_list
+                IO.puts nodeid_list[1]
                 
                 
                 #rstring = "This is the first rumour"
@@ -40,6 +40,6 @@ defmodule Boss do
                 IO.puts "Time in MilliSeconds: #{b-a}"
                 :init.stop                
         end
-        boss_receiver(nunNodes,numRequests,a)
+        boss_receiver(numNodes,numRequests,a)
     end
 end

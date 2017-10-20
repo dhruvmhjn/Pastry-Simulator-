@@ -8,7 +8,7 @@ defmodule PastryNode do
     end
 
     def init({nodeid,b,nodes,numRequests}) do
-        {:noreply, {nodeid,{},{},numRequests}}
+        {:ok, {nodeid,{},{},numRequests}}
     end
 
 end
