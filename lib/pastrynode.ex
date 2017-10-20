@@ -8,6 +8,7 @@ defmodule PastryNode do
     end
 
     def init({nodeid,b,nodes,numRequests}) do
+<<<<<<< HEAD
         {:ok, {nodeid,[],{},numRequests}}
     end
 
@@ -20,6 +21,9 @@ defmodule PastryNode do
 
         
         {:noreply,{nodeid,leaf,routetable,req}}
+=======
+        {:ok, {nodeid,{},{},numRequests}}
+>>>>>>> c1b6c1f8684884af26947e4a8fadd87fc7276cc2
     end
 
 end
