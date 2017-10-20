@@ -16,38 +16,30 @@ defmodule Boss do
         boss_receiver(numNodesInt,numRequestsInt,nil)
     end
             
-    def boss_receiver(topology,a,numInt) do
+    def boss_receiver(numNodes,numRequests,a) do
         receive do
             {:rumourpropogated,b} ->
                 IO.puts "Time in MilliSeconds: #{b-a}"
                 :init.stop
-            {:gossip_topology_created} ->
+            {:nodes_created} ->
                 rstring = "This is the first rumour"
-                IO.puts "Gossip Network is created"
+                IO.puts "Nodes created, netwoek init started"
+                
+                n_list = Enum.to_list 1..numNodes
+                nodeid_list = Enum.map(n_list, fn(x) -> String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
+                IO.puts nodeid_list
+                
+                
                 #rstring = "This is the first rumour"
-                a = System.system_time(:millisecond)
 
-                if topology == "line" || topology =="full" do
-                    GenServer.cast(String.to_atom("node#{:rand.uniform(numInt)}"), {:rumour, rstring})
-                end
-                if topology == "2D" || topology =="imp2D" do
-                    sqn= round(:math.sqrt(numInt))
-                    GenServer.cast(String.to_atom("node#{:rand.uniform(sqn)}@#{:rand.uniform(sqn)}"), {:rumour, rstring})
-                end
-            {:pushsum_topology_created} ->
+            {:network_ring_created} ->
                 IO.puts "PushSum Network is created"
                 a = System.system_time(:millisecond)
-                if topology == "line" || topology =="full" do
-                    GenServer.cast(String.to_atom("node#{:rand.uniform(numInt)}"), {:rumour,0.0,0.0})
-                end
-                if topology == "2D" || topology =="imp2D" do
-                    sqn= round(:math.sqrt(numInt))
-                    GenServer.cast(String.to_atom("node#{:rand.uniform(sqn)}@#{:rand.uniform(sqn)}"), {:rumour,0.0,0.0})
-                end
+                
             {:sumcomputed,b} ->
                 IO.puts "Time in MilliSeconds: #{b-a}"
                 :init.stop                
         end
-        boss_receiver(topology,a,numInt)
+        boss_receiver(nunNodes,numRequests,a)
     end
 end
