@@ -8,15 +8,13 @@ defmodule ApplicationSupervisor do
     
     def start_workers(sup, [numNodes,numRequests]) do
     
-        if algorithm == "push-sum" do
-            {:ok, gcpid} = Supervisor.start_child(sup, worker(PushsumCounter, [numNodes,numRequests]))     
-            Supervisor.start_child(sup, supervisor(PastrySupervisor, [numNodes,numRequests,gcpid]))
-        end
+            {:ok, lispid} = Supervisor.start_child(sup, worker(Listner, [numNodes,numRequests]))     
+            Supervisor.start_child(sup, supervisor(PastrySupervisor, [numNodes,numRequests,lispid]))
     
     end
     
     def init(_) do
-        supervise [], strategy: :one_for_all
+        supervise [], strategy: :one_for_one
     end
 
 end

@@ -1,13 +1,13 @@
 defmodule Listner do
     use GenServer
-    def start_link(numnodes,topology) do
-        myname = String.to_atom("gcounter")
-        return = GenServer.start_link(__MODULE__, {numnodes,topology}, name: myname )
+    def start_link(numnodes,numrequests) do
+        myname = String.to_atom("listner")
+        return = GenServer.start_link(__MODULE__, {numnodes,numrequests}, name: myname )
         return
     end
     
-    def init({numnodes,topology}) do
-        {:ok,{0,numnodes}}
+    def init({numnodes,numrequests}) do
+        {:ok,{numrequests,numnodes}}
     end
 
     def handle_cast(:heardrumour,{count,numnodes})do
