@@ -8,7 +8,18 @@ defmodule PastryNode do
     end
 
     def init({nodeid,b,nodes,numRequests}) do
-        {:noreply, {nodeid,{},{},numRequests}}
+        {:ok, {nodeid,[],{},numRequests}}
+    end
+
+    def handle_cast({:route,key},{nodeid,leaf,routetable,req})do
+        #compute difference between self and key
+
+
+
+        #check leaf set
+
+        
+        {:noreply,{nodeid,leaf,routetable,req}}
     end
 
 end
