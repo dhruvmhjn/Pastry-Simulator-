@@ -2,7 +2,6 @@ defmodule PastrySupervisor do
     use Supervisor
     def start_link(nodes,requests,_) do
         {:ok,pid}= Supervisor.start_link(__MODULE__,{nodes,requests},[])
-        #IO.puts "boss pid from nsup : #{inspect(Process.whereis(:boss))}"
         send(Process.whereis(:boss),{:nodes_created})
         {:ok,pid}
     end
