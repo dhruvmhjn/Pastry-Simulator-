@@ -19,7 +19,7 @@ defmodule Listner do
         else 
             send(Process.whereis(:boss),{:network_ring_created})
         end
-
+        {:noreply,{numrequests,numnodes,numstarted}}
     end
 
     # def handle_cast(:heardrumour,{numrequests,numnodes,numstated})do
