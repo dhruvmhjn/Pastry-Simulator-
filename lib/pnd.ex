@@ -100,6 +100,17 @@ defmodule PastryNode do
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
-    def handle_cast()
+    def handle_cast({:create_n_requests, num_created},{nodeid,leaf,routetable,req}) do
+        if(num_created < req)do
+            #vreate a requert 
+
+            num_created = num_created+1
+        end
+        
+
+
+        
+        {:noreply,{nodeid,leaf,routetable,req}}
+    end
 
 end
