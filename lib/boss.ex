@@ -31,7 +31,7 @@ defmodule Boss do
                 
                 nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(1) ) ),32,32)
                 # ADD INIT NEXT cast here 
-                Genserver.cast(String.to_atom(nextnode),{:intialize_table_first})
+                GenServer.cast(String.to_atom(nextnode),{:intialize_table_first})
 
                 
                 #rstring = "This is the first rumour"
