@@ -13,12 +13,12 @@ defmodule Listner do
     def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted}) do
         numstarted = numstarted +1
         if numnodes > numstarted do
-
-        nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(numstarted+1) ) ),32,32)
-        
-        # ADD INIT NEXT cast here 
-        Genserver.cast String.to_atom(nextnode)
-
+            nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(numstarted+1) ) ),32,32)
+            # ADD INIT NEXT cast here 
+            Genserver.cast(String.to_atom(nextnode),{:intialize_table,lastnodeid})
+        else 
+            send(Process.whereis(:boss),{:network_ring_created})
+        end
 
     end
 

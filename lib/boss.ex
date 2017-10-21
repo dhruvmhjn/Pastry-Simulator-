@@ -33,8 +33,8 @@ defmodule Boss do
                 #rstring = "This is the first rumour"
 
             {:network_ring_created} ->
-                IO.puts "PushSum Network is created"
-                a = System.system_time(:millisecond)
+                IO.puts "Network ring creattion msg recieved."
+                #a = System.system_time(:millisecond)
                 
             {:sumcomputed,b} ->
                 IO.puts "Time in MilliSeconds: #{b-a}"
