@@ -12,10 +12,16 @@ defmodule PastryNode do
         {:ok, {nodeid,[],[],numRequests}}
     end
 
-    def handle_cast({:intialize,_},{nodeid,leaf,routetable,req})do
+    def handle_cast({:intialize_table,hostid},{nodeid,leaf,routetable,req})do
+
+        #last lines
+        GenServer.cast(:listner,{:stated_s,nodeid})
         {:noreply,{nodeid,leaf,routetable,req}}
     end
-    def handle_cast({:intialize_first,_},{nodeid,leaf,routetable,req})do
+    def handle_cast({:intialize_table_first,hostid},{nodeid,leaf,routetable,req})do
+
+        #last lines
+        GenServer.cast(:listner,{:stated_s,nodeid})        
         {:noreply,{nodeid,leaf,routetable,req}}
     end
    

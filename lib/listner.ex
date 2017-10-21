@@ -7,11 +7,23 @@ defmodule Listner do
     end
     
     def init({numnodes,numrequests}) do
-        {:ok,{numrequests,numnodes}}
+        {:ok,{numrequests,numnodes,0}}
     end
 
-    def handle_cast(:heardrumour,{count,numnodes})do
-        newcount=count+1
+    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted}) do
+        numstarted = numstarted +1
+        if numnodes > numstarted do
+
+        nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(numstarted+1) ) ),32,32)
+        
+        # ADD INIT NEXT cast here 
+        Genserver.cast String.to_atom(nextnode)
+
+
+    end
+
+    def handle_cast(:heardrumour,{numrequests,numnodes,numstated})do
+        newcount=count+1 
         #IO.puts "#{newcount} node/s have heard the rumour."
         if newcount == numnodes do
             b = System.system_time(:millisecond)
