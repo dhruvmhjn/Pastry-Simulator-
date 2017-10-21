@@ -15,7 +15,9 @@ defmodule PastryNode do
     def handle_cast({:intialize_table,hostid},{nodeid,leaf,routetable,req})do
 
         #last lines
-        GenServer.cast(:listner,{:stated_s,nodeid})
+        #GenServer.cast(:listner,{:stated_s,nodeid})
+
+        GenServer.cast(hostid,{:join,nodeid,0})
         {:noreply,{nodeid,leaf,routetable,req}}
     end
     def handle_cast({:intialize_table_first},{nodeid,leaf,routetable,req})do
@@ -46,32 +48,42 @@ defmodule PastryNode do
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
-    def handle_cast({:join,incoming_node,msg},{nodeid,leaf,routetable,req}) do
-        GenServer.cast(incoming_node,{:routing_table,routetable})
+    def handle_cast({:join,incoming_node,path_count},{nodeid,leaf,routetable,req}) do
+        path_count=path_count+1
+        GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
         incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node_hex,leaf,routetable,nodeid)
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,msg))            
+            GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
         else
             sleep(500)
             IO.puts "Sendign leaf table"
-            GenServer.cast(incoming_node,{:leaf_table,leaf})
+            GenServer.cast(incoming_node,{:leaf_table,leaf,path_count})
         
         end
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
-    def handle_cast({:join_route,incoming_node,msg},{nodeid,leaf,routetable,req}) do
-        
-        
-        
-        
+    def handle_cast({:join_route,incoming_node,path_count},{nodeid,leaf,routetable,req}) do
+        path_count=path_count+1
+        GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
+        incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
+        #NEXT HOP for incoming node
+        next_hop = route_lookup(incoming_node_hex,leaf,routetable,nodeid)
+        if next_hop != nil do
+            GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
+        else
+            sleep(500)
+            IO.puts "Sendign leaf table"
+            GenServer.cast(incoming_node,{:leaf_table,leaf,path_count})
+        end
         
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
-    def handle_cast({:routing_table,msg},{nodeid,leaf,routetable,req}) do
+    def handle_cast({:routing_table,new_route_table,path_count},{nodeid,leaf,routetable,req}) do
+
         
 
 
@@ -81,5 +93,13 @@ defmodule PastryNode do
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
+
+    def handle_cast({:leaf_table,new_leaf_table,path_count},{nodeid,leaf,routetable,req}) do
+        
+        GenServer.cast(:listner,{:stated_s,nodeid})
+        {:noreply,{nodeid,leaf,routetable,req}}
+    end
+
+    def handle_cast()
 
 end
