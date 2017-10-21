@@ -8,22 +8,30 @@ defmodule PastryNode do
     end
 
     def init({nodeid,b,nodes,numRequests}) do
-        {:ok, {nodeid,[],{},numRequests}}
+        
+        {:ok, {nodeid,[],[],numRequests}}
     end
 
+    def handle_cast({:intialize,_},{nodeid,leaf,routetable,req})do
+        {:noreply,{nodeid,leaf,routetable,req}}
+    end
+    def handle_cast({:intialize_first,_},{nodeid,leaf,routetable,req})do
+        {:noreply,{nodeid,leaf,routetable,req}}
+    end
    
     def handle_cast({:route,key},{nodeid,leaf,routetable,req})do
         #compute difference between leafset and key
         {keyval,_} = Integer.parse(key,16)
 
         #check leaf set
-        {firstlist,_} = Integer.parse(to_string(List.first(leaf)),16)
-        {lastleaf,_} = Integer.parse(to_string(List.last(leaf)),16)
+        {firstlist,_} = Integer.parse(List.first(leaf),16)
+        {lastleaf,_} = Integer.parse(List.last(leaf),16)
 
-        if(keyval >= firstleaf) &&(keyval <= lastleaf) do
-            
-        end
-        
+       # if((keyval >= firstleaf) &&(keyval <= lastleaf)) do
+            #compare abs of differences 
+        #    d = firstleaf - keyval
+        #end
+       
 
 
         
