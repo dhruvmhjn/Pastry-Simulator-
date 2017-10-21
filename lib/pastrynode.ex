@@ -48,4 +48,5 @@ defmodule PastryNode do
         {:noreply,{nodeid,leaf,routetable,req}}
     end
 
-end
+#Enum.each routetable,  fn {index, _} -> Enum.each routetable[index], fn{k,v} ->  IO.puts "#{k} --> #{v}"  end end
+#Enum.each routetable,  fn {index, _} -> Enum.each routetable[index], fn{k,v} -> [v|qlist] end end
