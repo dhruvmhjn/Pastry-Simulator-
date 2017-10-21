@@ -28,18 +28,20 @@ defmodule PastryNode do
     def handle_cast({:route,key},{nodeid,leaf,routetable,req})do
         #compute difference between leafset and key
         {keyval,_} = Integer.parse(key,16)
-
-        #check leaf set
         {firstlist,_} = Integer.parse(List.first(leaf),16)
         {lastleaf,_} = Integer.parse(List.last(leaf),16)
 
-       if((keyval >= firstleaf) &&(keyval <= lastleaf)) do
-            #compare abs of differences 
-            min_diff_leaf = Enum.min_by(leaf, fn(x) -> Kernel.abs(x - keyval) end)
+        [{:eq, common}|_] = String.myers_difference(nodeid,key)
+        common_len = String.length common_len
+        {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
 
-            #cast to min_diff_leaf        
+        route_to = cond do
+            (keyval >= firstleaf) &&(keyval <= lastleaf) -> Enum.min_by(leaf, fn(x) -> Kernel.abs(x - keyval) end)
+            routetable[common_len][next_digit] != nil ->  routetable[common_len][next_digit]
+            
+            true -> nil
         end
-       
+ 
 
 
         
