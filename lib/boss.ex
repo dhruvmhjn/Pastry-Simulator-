@@ -44,7 +44,7 @@ defmodule Boss do
                 
                 #CAST initial message to everyone 
                 
-                Enum.map(nodeid_list, fn(x) -> GenServer.cast(String.to_atom(x),{:create_requests}) end)
+                Enum.map(nodeid_list, fn(x) -> GenServer.cast(String.to_atom(x),{:create_n_requests}) end)
                 #a = System.system_time(:millisecond)
                 
             {:sumcomputed,b} ->
