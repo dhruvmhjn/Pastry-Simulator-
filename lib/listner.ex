@@ -7,10 +7,10 @@ defmodule Listner do
     end
     
     def init({numnodes,numrequests}) do
-        {:ok,{numrequests,numnodes,0}}
+        {:ok,{numrequests,numnodes,0,0}}
     end
 
-    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted}) do
+    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted,hop_counter}) do
         numstarted = numstarted+1
         if numnodes > numstarted do
             IO.puts "num in ring: #{numstarted}"
