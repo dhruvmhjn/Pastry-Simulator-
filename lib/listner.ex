@@ -29,21 +29,7 @@ defmodule Listner do
             hop_counter = hop_counter + no_of_hops
         
         else
-            send(Process.whereis(:boss),{:all_requersts_served,hop_counter}
+            send(Process.whereis(:boss),{:all_requersts_served,hop_counter})
         end
     end
-
-    # def handle_cast(:heardrumour,{numrequests,numnodes,numstated})do
-    #     newcount=count+1 
-    #     #IO.puts "#{newcount} node/s have heard the rumour."
-    #     if newcount == numnodes do
-    #         b = System.system_time(:millisecond)
-    #         IO.puts "Rumour Propogated, Terminating."
-    #         send(Process.whereis(:boss),{:rumourpropogated,b})
-    #         #s:init.stop
-    #         #OR Supervisor.stop(sup)
-    #     end
-    #     {:noreply,{newcount,numnodes}}
-    # end
-
 end
