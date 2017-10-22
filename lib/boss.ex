@@ -13,7 +13,7 @@ defmodule Boss do
         
         ApplicationSupervisor.start_link([numNodesInt,numRequestsInt])
         
-        boss_receiver(numNodesInt,numRequestsInt,nil)
+        boss_receiver(numNodesInt,numRequestsInt)
     end
             
     def boss_receiver(numNodes,numRequests) do
