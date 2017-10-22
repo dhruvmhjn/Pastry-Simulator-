@@ -75,7 +75,7 @@ def handle_cast({:join,incoming_node,path_count},{selfid,leaf,routetable,req,num
     GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
     incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
     #NEXT HOP for incoming node
-    next_hop = route_lookup(incoming_node_hex,leaf,routetable,nodeid)
+    next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
     if next_hop != nil do
         GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
     else
@@ -92,7 +92,7 @@ def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,r
     GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
     incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
     #NEXT HOP for incoming node
-    next_hop = route_lookup(incoming_node_hex,leaf,routetable,nodeid)
+    next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
     if next_hop != nil do
         GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
     else
@@ -108,10 +108,6 @@ def handle_cast({:routing_table,new_route_table,path_count},{selfid,leaf,routeta
 
     
 
-
-
-
-
     {:noreply,{selfid,leaf,routetable,req,num_created}}
 end
 
@@ -124,7 +120,19 @@ end
 
 def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
     if(num_created < req)do
-        #vreate a requert 
+        key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
+        
+        next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
+
+        if next_hop != nil do
+            GenServer.cast(String.to_atom("n#{next_hop}",{:route,key,message,path_count))            
+        else
+            #sleep(500)
+            #IO.puts "Sendign leaf table"
+            #GenServer.cast(incoming_node,{:leaf_table,leaf,path_count}) T
+
+            #SEND PATH COUNT 
+            
 
         num_created = num_created+1
     end
@@ -132,7 +140,7 @@ def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) d
 
 
     
-    {:noreply,{nodeid,leaf,routetable,req}}
+    {:noreply,{selfid,leaf,routetable,req,num_created}}
 end
 
 end
