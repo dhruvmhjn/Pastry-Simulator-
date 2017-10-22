@@ -29,7 +29,8 @@ defmodule Listner do
         if(hop_msgs_recieved <= (numrequests*numnodes)) do
             hop_counter = hop_counter + no_of_hops
         else
-            send(Process.whereis(:boss),{:all_requests_served,hop_counter})
+            send(Priocess.whereis(:boss),{:all_requests_served,hop_counter})
         end
+        {:noreply,{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}}
     end
 end

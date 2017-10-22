@@ -7,7 +7,9 @@ defmodule PastryNode do
     GenServer.start_link(__MODULE__, {nodeid,b,nodes,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
-    def init({selfid,b,nodes,numRequests}) do       
+    def init({selfid,b,nodes,numRequests}) do 
+        b
+        nodes      
 
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
         #entries in routetable to point to self
@@ -22,7 +24,7 @@ defmodule PastryNode do
 
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
-            if route_to = selfid do
+            if route_to == selfid do
                 route_to = nil
             end
         else
