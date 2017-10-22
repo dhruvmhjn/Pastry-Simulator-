@@ -77,8 +77,6 @@ defmodule PastryNode do
 
 
 
-
-
     def handle_cast({:intialize_table,hostid},{selfid,leaf,routetable,req,num_created})do
     
             #last lines
@@ -143,6 +141,9 @@ defmodule PastryNode do
         GenServer.cast(:listner,{:stated_s,selfid})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
+
+#ROUTING MSGS CODE
+
 
     def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
         if(num_created < req)do
