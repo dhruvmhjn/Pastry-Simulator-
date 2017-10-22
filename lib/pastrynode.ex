@@ -7,9 +7,15 @@ defmodule PastryNode do
     GenServer.start_link(__MODULE__, {nodeid,b,nodes,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
-    def init({selfid,b,nodes,numRequests}) do        
+    def init({selfid,b,nodes,numRequests}) do       
+
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
         #entries in routetable to point to self
+        selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
+
+        routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
+        routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
+        
         {:ok, {selfid,[selfid],routetable,numRequests,0}}
     end
 
