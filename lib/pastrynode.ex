@@ -178,9 +178,11 @@ defmodule PastryNode do
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
-    def handle_cast({:routing_table,new_route_table,path_count},{selfid,leaf,routetable,req,num_created}) do
+    def handle_cast({:routing_table,new_route_table,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
         #dsa
-
+        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        common_len = String.length common
+        
 
 
     {:noreply,{selfid,leaf,routetable,req,num_created}}
