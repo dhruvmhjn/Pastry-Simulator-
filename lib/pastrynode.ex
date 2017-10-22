@@ -97,7 +97,7 @@ defmodule PastryNode do
     
             #last lines
             #GenServer.cast(:listner,{:stated_s,nodeid})
-        GenServer.cast(hostid,{:join,selfid,0})
+        GenServer.cast(String.to_atom("n"<>hostid),{:join,selfid,0})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
@@ -144,9 +144,9 @@ defmodule PastryNode do
 
 
 
-    def handle_cast({:join,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
+    def handle_cast({:join, incoming_node ,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
-        GenServer.cast(incoming_node,{:routing_table,routetable,selfid,path_count})
+        GenServer.cast((String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
        
         #sincoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
@@ -156,7 +156,7 @@ defmodule PastryNode do
         else
             Process.sleep(500)
             IO.puts "Sending leaf table"
-            GenServer.cast(incoming_node,{:leaf_table,leaf,selfid,path_count})
+            GenServer.cast((String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
@@ -164,7 +164,7 @@ defmodule PastryNode do
 
     def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
-        GenServer.cast(incoming_node,{:routing_table,routetable,selfid,path_count})
+        GenServer.cast((String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
         #incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
@@ -173,7 +173,7 @@ defmodule PastryNode do
         else
             Process.sleep(500)
             IO.puts "Sending leaf table"
-            GenServer.cast(incoming_node,{:leaf_table,leaf,selfid,path_count})
+            GenServer.cast((String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
