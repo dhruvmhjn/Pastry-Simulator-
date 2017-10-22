@@ -121,23 +121,18 @@ defmodule PastryNode do
         if(num_created < req)do
             key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
             next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
-
             if next_hop != nil do
                 GenServer.cast(String.to_atom("n#{next_hop}",{:route_message,key,"this is the msg",0))
 
             else
-            
-                #sleep(500)
-                #IO.puts "Sendign leaf table"
-                #GenServer.cast(incoming_node,{:leaf_table,leaf,path_count}) T
+
 
                 #SEND hop COUNT 
             end    
-        num_created = num_created+1
-        sleep(1000)
-        GenServer.cast(String.to_atom(x),{:create_n_requests})
-        
-    end
+            num_created = num_created+1
+            sleep(1000)
+            GenServer.cast(selfid,{:create_n_requests})
+        end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
@@ -145,16 +140,12 @@ defmodule PastryNode do
         next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
         
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}",{:route_message,key,"this is the msg",0))
+            GenServer.cast(String.to_atom("n#{next_hop}",{:route_message,key,msg,hop_count+1))
         
         else
-                    
-        #sleep(500)
-        #IO.puts "Sendign leaf table"
-        #GenServer.cast(incoming_node,{:leaf_table,leaf,path_count}) T
-        
-        #SEND hop COUNT 
-                    end    
+            #SEND hop COUNT 
+        end
+    {:noreply,{selfid,leaf,routetable,req,num_created}}   
     end
 
 
