@@ -25,9 +25,9 @@ defmodule Listner do
 
     def handle_cast({:delivery,no_of_hops},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
         hop_msgs_recieved = hop_msgs_recieved + 1
+        IO.puts "delivery msgs recieved: #{hop_msgs_recieved}"
         if(hop_msgs_recieved <= (numrequests*numnodes)) do
             hop_counter = hop_counter + no_of_hops
-        
         else
             send(Process.whereis(:boss),{:all_requersts_served,hop_counter})
         end
