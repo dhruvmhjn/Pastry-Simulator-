@@ -29,7 +29,7 @@ defmodule Listner do
             hop_counter = hop_counter + no_of_hops
         
         else
-            send(Process.whereis(:boss),{:all_requersts_served,hop_counter}
+            send(Process.whereis(:boss),{:all_requersts_served,hop_counter})
         end
     end
 end
