@@ -211,7 +211,15 @@ defmodule PastryNode do
     
     def handle_call({:update_route_table,incoming_routetable,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
         
-        {:reply,"ok",{selfid,leaf,routetable,req,num_created}} 
+        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        common_len = String.length common
+        rows = Enum.to_list 0..31        
+
+        res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
+        res_map = Matrix.from_list(res)  
+
+
+        {:reply,"ok",{selfid,leaf,res_map,req,num_created}} 
     end
 
     def handle_call({:update_routeleaf_table,incoming_routetable,incoming_leaf,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
