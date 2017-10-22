@@ -11,41 +11,6 @@ defmodule PastryNode do
 
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
         #entries in routetable to point to self
-        selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
-
-        routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
-        routetable = put_in routetable[1][Enum.at(selflist,1)], selfid
-        routetable = put_in routetable[2][Enum.at(selflist,2)], selfid
-        routetable = put_in routetable[3][Enum.at(selflist,3)], selfid
-        routetable = put_in routetable[4][Enum.at(selflist,4)], selfid
-        routetable = put_in routetable[5][Enum.at(selflist,5)], selfid
-        routetable = put_in routetable[6][Enum.at(selflist,6)], selfid
-        routetable = put_in routetable[7][Enum.at(selflist,7)], selfid
-        routetable = put_in routetable[8][Enum.at(selflist,8)], selfid
-        routetable = put_in routetable[9][Enum.at(selflist,9)], selfid
-        routetable = put_in routetable[10][Enum.at(selflist,10)], selfid
-        routetable = put_in routetable[11][Enum.at(selflist,11)], selfid
-        routetable = put_in routetable[12][Enum.at(selflist,12)], selfid
-        routetable = put_in routetable[13][Enum.at(selflist,13)], selfid
-        routetable = put_in routetable[14][Enum.at(selflist,14)], selfid
-        routetable = put_in routetable[15][Enum.at(selflist,15)], selfid
-        routetable = put_in routetable[16][Enum.at(selflist,16)], selfid
-        routetable = put_in routetable[17][Enum.at(selflist,17)], selfid
-        routetable = put_in routetable[18][Enum.at(selflist,18)], selfid
-        routetable = put_in routetable[19][Enum.at(selflist,19)], selfid
-        routetable = put_in routetable[20][Enum.at(selflist,20)], selfid
-        routetable = put_in routetable[21][Enum.at(selflist,21)], selfid
-        routetable = put_in routetable[22][Enum.at(selflist,22)], selfid
-        routetable = put_in routetable[23][Enum.at(selflist,23)], selfid
-        routetable = put_in routetable[24][Enum.at(selflist,24)], selfid
-        routetable = put_in routetable[25][Enum.at(selflist,25)], selfid
-        routetable = put_in routetable[26][Enum.at(selflist,26)], selfid
-        routetable = put_in routetable[27][Enum.at(selflist,27)], selfid
-        routetable = put_in routetable[28][Enum.at(selflist,28)], selfid
-        routetable = put_in routetable[29][Enum.at(selflist,29)], selfid
-        routetable = put_in routetable[30][Enum.at(selflist,30)], selfid
-        routetable = put_in routetable[31][Enum.at(selflist,31)], selfid
-
         {:ok, {selfid,[selfid],routetable,numRequests,0}}
     end
 
@@ -158,6 +123,40 @@ defmodule PastryNode do
 
 
     def handle_cast({:intialize_table,hostid},{selfid,leaf,routetable,req,num_created})do
+        selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
+        
+                routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
+                routetable = put_in routetable[1][Enum.at(selflist,1)], selfid
+                routetable = put_in routetable[2][Enum.at(selflist,2)], selfid
+                routetable = put_in routetable[3][Enum.at(selflist,3)], selfid
+                routetable = put_in routetable[4][Enum.at(selflist,4)], selfid
+                routetable = put_in routetable[5][Enum.at(selflist,5)], selfid
+                routetable = put_in routetable[6][Enum.at(selflist,6)], selfid
+                routetable = put_in routetable[7][Enum.at(selflist,7)], selfid
+                routetable = put_in routetable[8][Enum.at(selflist,8)], selfid
+                routetable = put_in routetable[9][Enum.at(selflist,9)], selfid
+                routetable = put_in routetable[10][Enum.at(selflist,10)], selfid
+                routetable = put_in routetable[11][Enum.at(selflist,11)], selfid
+                routetable = put_in routetable[12][Enum.at(selflist,12)], selfid
+                routetable = put_in routetable[13][Enum.at(selflist,13)], selfid
+                routetable = put_in routetable[14][Enum.at(selflist,14)], selfid
+                routetable = put_in routetable[15][Enum.at(selflist,15)], selfid
+                routetable = put_in routetable[16][Enum.at(selflist,16)], selfid
+                routetable = put_in routetable[17][Enum.at(selflist,17)], selfid
+                routetable = put_in routetable[18][Enum.at(selflist,18)], selfid
+                routetable = put_in routetable[19][Enum.at(selflist,19)], selfid
+                routetable = put_in routetable[20][Enum.at(selflist,20)], selfid
+                routetable = put_in routetable[21][Enum.at(selflist,21)], selfid
+                routetable = put_in routetable[22][Enum.at(selflist,22)], selfid
+                routetable = put_in routetable[23][Enum.at(selflist,23)], selfid
+                routetable = put_in routetable[24][Enum.at(selflist,24)], selfid
+                routetable = put_in routetable[25][Enum.at(selflist,25)], selfid
+                routetable = put_in routetable[26][Enum.at(selflist,26)], selfid
+                routetable = put_in routetable[27][Enum.at(selflist,27)], selfid
+                routetable = put_in routetable[28][Enum.at(selflist,28)], selfid
+                routetable = put_in routetable[29][Enum.at(selflist,29)], selfid
+                routetable = put_in routetable[30][Enum.at(selflist,30)], selfid
+                routetable = put_in routetable[31][Enum.at(selflist,31)], selfid
     
             #last lines
             #GenServer.cast(:listner,{:stated_s,nodeid})
@@ -166,6 +165,40 @@ defmodule PastryNode do
     end
 
     def handle_cast({:intialize_table_first},{selfid,leaf,routetable,req,num_created})do
+        selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
+        
+                routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
+                routetable = put_in routetable[1][Enum.at(selflist,1)], selfid
+                routetable = put_in routetable[2][Enum.at(selflist,2)], selfid
+                routetable = put_in routetable[3][Enum.at(selflist,3)], selfid
+                routetable = put_in routetable[4][Enum.at(selflist,4)], selfid
+                routetable = put_in routetable[5][Enum.at(selflist,5)], selfid
+                routetable = put_in routetable[6][Enum.at(selflist,6)], selfid
+                routetable = put_in routetable[7][Enum.at(selflist,7)], selfid
+                routetable = put_in routetable[8][Enum.at(selflist,8)], selfid
+                routetable = put_in routetable[9][Enum.at(selflist,9)], selfid
+                routetable = put_in routetable[10][Enum.at(selflist,10)], selfid
+                routetable = put_in routetable[11][Enum.at(selflist,11)], selfid
+                routetable = put_in routetable[12][Enum.at(selflist,12)], selfid
+                routetable = put_in routetable[13][Enum.at(selflist,13)], selfid
+                routetable = put_in routetable[14][Enum.at(selflist,14)], selfid
+                routetable = put_in routetable[15][Enum.at(selflist,15)], selfid
+                routetable = put_in routetable[16][Enum.at(selflist,16)], selfid
+                routetable = put_in routetable[17][Enum.at(selflist,17)], selfid
+                routetable = put_in routetable[18][Enum.at(selflist,18)], selfid
+                routetable = put_in routetable[19][Enum.at(selflist,19)], selfid
+                routetable = put_in routetable[20][Enum.at(selflist,20)], selfid
+                routetable = put_in routetable[21][Enum.at(selflist,21)], selfid
+                routetable = put_in routetable[22][Enum.at(selflist,22)], selfid
+                routetable = put_in routetable[23][Enum.at(selflist,23)], selfid
+                routetable = put_in routetable[24][Enum.at(selflist,24)], selfid
+                routetable = put_in routetable[25][Enum.at(selflist,25)], selfid
+                routetable = put_in routetable[26][Enum.at(selflist,26)], selfid
+                routetable = put_in routetable[27][Enum.at(selflist,27)], selfid
+                routetable = put_in routetable[28][Enum.at(selflist,28)], selfid
+                routetable = put_in routetable[29][Enum.at(selflist,29)], selfid
+                routetable = put_in routetable[30][Enum.at(selflist,30)], selfid
+                routetable = put_in routetable[31][Enum.at(selflist,31)], selfid
     
             #last lines
         GenServer.cast(:listner,{:stated_s,selfid})        
