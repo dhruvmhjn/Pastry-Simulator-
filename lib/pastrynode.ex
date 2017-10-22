@@ -317,7 +317,7 @@ defmodule PastryNode do
                 GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})
 
             else
-
+                GenServer.cast(:listner,{:delivery,0})
 
                 #SEND hop COUNT 
             end    
@@ -335,6 +335,7 @@ defmodule PastryNode do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,msg,hop_count+1})
         
         else
+            GenServer.cast(:listner,{:delivery,hop_count})
             #SEND hop COUNT 
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}   
