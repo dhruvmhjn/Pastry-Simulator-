@@ -7,9 +7,9 @@ defmodule PastryNode do
     GenServer.start_link(__MODULE__, {nodeid,b,nodes,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
-    def init({nodeid,b,nodes,numRequests}) do        
+    def init({selfid,b,nodes,numRequests}) do        
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
-        {:ok, {nodeid,[],routetable,numRequests,0}}
+        {:ok, {selfid,[seifid],routetable,numRequests,0}}
     end
 
 
