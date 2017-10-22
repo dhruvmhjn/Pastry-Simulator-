@@ -187,7 +187,7 @@ defmodule PastryNode do
         res = for row <- rows, col <- colms do 
                 rt_val = Map.get(Map.get(rt,row),col)
                 st_val = Map.get(Map.get(st,row),col)
-                if((rt_val == nil) && (st_val != nil])) do 
+                if((rt_val == nil) && (st_val != nil)) do 
                  rt = put_in rt[row][col],st[row][col]
              end
          end
