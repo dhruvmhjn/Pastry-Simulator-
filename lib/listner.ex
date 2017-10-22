@@ -24,7 +24,7 @@ defmodule Listner do
     end
 
     def handle_cast({:delivery,no_of_hops},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
-        hop_msgs_recieved = hop_msgs_recieved +1
+        hop_msgs_recieved = hop_msgs_recieved + 1
         if(hop_msgs_recieved <= (numrequests*numnodes)) do
             hop_counter = hop_counter + no_of_hops
         
