@@ -22,6 +22,9 @@ defmodule PastryNode do
 
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
+            if route_to = selfid do
+                route_to = nil
+            end
         else
             [{:eq, common}|_] = String.myers_difference(selfid,key)
             common_len = String.length common
@@ -208,9 +211,19 @@ defmodule PastryNode do
     end
 
     def handle_call({:update_routeleaf_table,incoming_routetable,incoming_leaf,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
-        
+       
+        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        common_len = String.length common
+        rows = Enum.to_list 0..31        
 
-        {:reply,"ok",{selfid,leaf,routetable,req,num_created}} 
+        res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
+        res_map = Matrix.from_list(res)  
+        
+        #ADD LEAF LOGIC HERE
+
+
+
+        {:reply,"ok",{selfid,leaf,res_map,req,num_created}} 
     end
 
     #ROUTING MSGS CODE
