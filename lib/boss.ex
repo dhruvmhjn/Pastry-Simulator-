@@ -16,7 +16,7 @@ defmodule Boss do
         boss_receiver(numNodesInt,numRequestsInt,nil)
     end
             
-    def boss_receiver(numNodes,numRequests,a) do
+    def boss_receiver(numNodes,numRequests) do
         receive do
             
             {:nodes_created} ->
@@ -39,10 +39,11 @@ defmodule Boss do
 
                 #a = System.system_time(:millisecond)
                 
-            {:sumcomputed,b} ->
-                IO.puts "Time in MilliSeconds: #{b-a}"
+            {:all_requersts_served,b} ->
+                avg = b/(numNodes*numRequests)
+                IO.puts "Avg Hops: #{avg}"
                 :init.stop                
         end
-        boss_receiver(numNodes,numRequests,a)
+        boss_receiver(numNodes,numRequests)
     end
 end

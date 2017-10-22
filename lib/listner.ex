@@ -7,10 +7,10 @@ defmodule Listner do
     end
     
     def init({numnodes,numrequests}) do
-        {:ok,{numrequests,numnodes,0,0}}
+        {:ok,{numrequests,numnodes,0,0,0}}
     end
 
-    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted,hop_counter}) do
+    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
         numstarted = numstarted+1
         if numnodes > numstarted do
             IO.puts "num in ring: #{numstarted}"
@@ -20,7 +20,17 @@ defmodule Listner do
         else 
             send(Process.whereis(:boss),{:network_ring_created})
         end
-        {:noreply,{numrequests,numnodes,numstarted,hop_counter}}
+        {:noreply,{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}}
+    end
+
+    def handle_cast({:delivery,no_of_hops},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
+        hop_msgs_recieved = hop_msgs_recieved +1
+        if(hop_msgs_recieved <= (numrequests*numnodes)) do
+            hop_counter = hop_counter + no_of_hops
+        
+        else
+            send(Process.whereis(:boss),{:all_requersts_served,hop_counter}
+        end
     end
 
     # def handle_cast(:heardrumour,{numrequests,numnodes,numstated})do
