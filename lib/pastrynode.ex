@@ -146,7 +146,7 @@ defmodule PastryNode do
 
     def handle_cast({:join, incoming_node ,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
-        GenServer.cast((String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
+        GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
        
         #sincoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
