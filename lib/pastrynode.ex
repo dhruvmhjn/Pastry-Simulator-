@@ -9,20 +9,20 @@ defmodule PastryNode do
 
     def init({selfid,b,nodes,numRequests}) do        
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
-        {:ok, {selfid,[seifid],routetable,numRequests,0}}
+        {:ok, {selfid,[selfid],routetable,numRequests,0}}
     end
 
 
     def route_lookup(key, leaf, routetable , selfid ) do
         {keyval,_} = Integer.parse(key,16)
-        {firstlist,_} = Integer.parse(List.first(leaf),16)
+        {firstleaf,_} = Integer.parse(List.first(leaf),16)
         {lastleaf,_} = Integer.parse(List.last(leaf),16)
 
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
         else
-            [{:eq, common}|_] = String.myers_difference(nodeid,key)
-            common_len = String.length common_len
+            [{:eq, common}|_] = String.myers_difference(selfid,key)
+            common_len = String.length common
             {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
              if (routetable[common_len][next_digit] != nil) do
                 route_to = routetable[common_len][next_digit] 
@@ -32,7 +32,7 @@ defmodule PastryNode do
                 routelist = List.flatten(routelist)
                 routelist = routelist ++ leaf 
                 if (!Enum.empty?(routelist))do
-                    candidate = Enum.min_by(routelist, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval)
+                    candidate = Enum.min_by(routelist, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
                     #compare candidate with self
                     cand_diff = Kernel.abs(elem(Integer.parse(candidate,16),0) - keyval)
                     self_diff = Kernel.abs(elem(Integer.parse(selfid,16),0) - keyval)
@@ -142,9 +142,9 @@ defmodule PastryNode do
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
+            GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            sleep(500)
+            Process.sleep(500)
             IO.puts "Sending leaf table"
             GenServer.cast(incoming_node,{:leaf_table,leaf,path_count})
     
@@ -159,9 +159,9 @@ defmodule PastryNode do
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}",{:join_route,incoming_node,path_count))            
+            GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            sleep(500)
+            Process.sleep(500)
             IO.puts "Sending leaf table"
             GenServer.cast(incoming_node,{:leaf_table,leaf,path_count})
         end
@@ -189,9 +189,9 @@ defmodule PastryNode do
     def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
         if(num_created < req)do
             key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
-            next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
+            next_hop = route_lookup(key,leaf,routetable,selfid)
             if next_hop != nil do
-                GenServer.cast(String.to_atom("n#{next_hop}",{:route_message,key,"this is the msg",0))
+                GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})
 
             else
 
@@ -199,17 +199,17 @@ defmodule PastryNode do
                 #SEND hop COUNT 
             end    
             num_created = num_created+1
-            sleep(1000)
+            Process.sleep(1000)
             GenServer.cast(selfid,{:create_n_requests})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
     def handle_cast({:route_message,key,msg,hop_count},{selfid,leaf,routetable,req,num_created}) do
-        next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
+        next_hop = route_lookup(key,leaf,routetable,selfid)
         
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}",{:route_message,key,msg,hop_count+1))
+            GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,msg,hop_count+1})
         
         else
             #SEND hop COUNT 
