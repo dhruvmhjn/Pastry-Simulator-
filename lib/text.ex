@@ -69,3 +69,22 @@
     
     #Enum.each routelist,  fn (row) -> Enum.map row, fn(x) -> IO.puts"#{x}"  end end
 
+    def myfunc() do
+        rows = Enum.to_list 0..1
+        colms = Enum.to_list 0..15
+        st = Matrix.from_list([[],[]])
+        rt = Matrix.from_list([[],[]])
+        rt = put_in rt[0][9], "abc"
+        rt = put_in rt[1][15], "abc"
+        st = put_in st[0][9], "xyz"
+        st = put_in st[0][14], "xyz"       
+        st = put_in st[1][8], "xyz"      
+        st = put_in st[1][10], "xyz"
+        res = for row <- rows, col <- colms do 
+            if((rt[row][col] == nil) && (st[row[col] != nil])) do 
+                IO.puts "#{rt[row][col]}"
+               # rt[row][col] = put_in rt[row][col],st[row][col]
+             end
+         end
+        rt
+    end
