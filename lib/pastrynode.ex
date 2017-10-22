@@ -147,10 +147,10 @@ defmodule PastryNode do
     def handle_cast({:join,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
         GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
-        #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
+       
+        #sincoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
-        next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
+        next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
@@ -165,9 +165,9 @@ defmodule PastryNode do
     def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
         GenServer.cast(incoming_node,{:routing_table,routetable,path_count})
-        incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
+        #incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
-        next_hop = route_lookup(incoming_node_hex,leaf,routetable,selfid)
+        next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
@@ -189,8 +189,28 @@ defmodule PastryNode do
 
     def handle_cast({:leaf_table,new_leaf_table,path_count},{selfid,leaf,routetable,req,num_created}) do
     
+        route_table_list = ["AAA"]
+        leaf_list = ["BB"]
+        #Create variable combined list
+        
+        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom(("n"<>x)),{:update_route_table,routetable}) end)
+        
+        return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom(("n"<>x)),{:update_routeleaf_table,routetable,leaf,selfid}) end)
+
+        #ADD RETURN list check here
         GenServer.cast(:listner,{:stated_s,selfid})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
+    end
+    
+    def handle_call({:update_route_table,incoming_routetable},{selfid,leaf,routetable,req,num_created}) do
+        
+        {:reply,"ok",{selfid,leaf,routetable,req,num_created}} 
+    end
+
+    def handle_call({:update_routeleaf_table,incoming_routetable,incoming_leaf,newnodeid},{selfid,leaf,routetable,req,num_created}) do
+        
+
+        {:reply,"ok",{selfid,leaf,routetable,req,num_created}} 
     end
 
 #ROUTING MSGS CODE
