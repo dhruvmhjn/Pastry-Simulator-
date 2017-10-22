@@ -132,13 +132,11 @@ def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) d
             #GenServer.cast(incoming_node,{:leaf_table,leaf,path_count}) T
 
             #SEND PATH COUNT 
-            
+        end    
 
         num_created = num_created+1
     end
     
-
-
     
     {:noreply,{selfid,leaf,routetable,req,num_created}}
 end
