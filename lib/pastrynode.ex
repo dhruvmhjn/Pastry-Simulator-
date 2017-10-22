@@ -32,6 +32,8 @@ defmodule PastryNode do
                 [_|routelist] = Enum.chunk(rtl,common_len)
                 routelist = List.flatten(routelist)
                 routelist = routelist ++ leaf 
+                #never empty, remove duplicates
+
                 if (!Enum.empty?(routelist))do
                     candidate = Enum.min_by(routelist, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
                     #compare candidate with self
