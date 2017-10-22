@@ -28,8 +28,13 @@ defmodule PastryNode do
                 route_to = nil
             end
         else
-            [{:eq, common}|_] = String.myers_difference(selfid,key)
-            common_len = String.length common
+            [{match_type, common}|_] = String.myers_difference(selfid,key)
+            if match_type == :eq do
+                common_len = String.length common
+            else
+                common_len = 0
+            end
+                
             {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
              if (routetable[common_len][next_digit] != nil) do
                 route_to = routetable[common_len][next_digit] 
