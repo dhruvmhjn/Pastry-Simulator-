@@ -190,8 +190,12 @@ defmodule PastryNode do
     end
 
 
-    def handle_cast({:leaf_table,new_leaf_table,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
-    
+     def handle_cast({:leaf_table,new_leaf_set,path_count},{selfid,leaf,routetable,req,num_created}) do
+            
+        merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
+        merge_size = Enum.count(merge_leaf)
+                
+
         route_table_list = ["AAA"]
         leaf_list = ["BB"]
         #Create variable combined list
