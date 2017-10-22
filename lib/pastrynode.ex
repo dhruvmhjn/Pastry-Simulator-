@@ -23,6 +23,12 @@ defmodule PastryNode do
         common_len = String.length common_len
         {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
 
+        routelist = Matrix.to_list(routetable)
+        [_|rtl] = Enum.chunk(routelist,3)
+        rtl = List.flatten(rtl)
+        rtl = rtl ++ leaf
+
+
         route_to = cond do
             (keyval >= firstleaf) &&(keyval <= lastleaf) -> Enum.min_by(leaf, fn(x) -> Kernel.abs(x - keyval) end)
             routetable[common_len][next_digit] != nil ->  routetable[common_len][next_digit]
@@ -38,6 +44,10 @@ defmodule PastryNode do
 
 #Enum.each routetable,  fn {index, _} -> Enum.each routetable[index], fn{k,v} ->  IO.puts "#{k} --> #{v}"  end end
 #Enum.each routetable,  fn {index, _} -> Enum.each routetable[index], fn{k,v} -> [v|qlist] end end
+
+
+#Enum.each routelist,  fn (row) -> Enum.map row, fn(x) -> IO.puts"#{x}"  end end
+
 
 
 
