@@ -9,6 +9,7 @@ defmodule PastryNode do
 
     def init({selfid,b,nodes,numRequests}) do        
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
+        #entries in routetable to point to self
         {:ok, {selfid,[selfid],routetable,numRequests,0}}
     end
 
@@ -47,7 +48,7 @@ defmodule PastryNode do
              end
         end
 
-
+    route_to
     end
 
    
