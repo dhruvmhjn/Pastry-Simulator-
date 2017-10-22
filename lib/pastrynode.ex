@@ -184,12 +184,15 @@ defmodule PastryNode do
         st = put_in st[0][14], "xyz"       
         st = put_in st[1][8], "xyz"      
         st = put_in st[1][10], "xyz"
-        res = for row <- rows, col <- colms do 
+        for row <- rows, col <- colms do 
                 rt_val = Map.get(Map.get(rt,row),col)
                 st_val = Map.get(Map.get(st,row),col)
                 if((rt_val == nil) && (st_val != nil)) do 
-                 rt = put_in rt[row][col],st[row][col]
-             end
+                    IO.puts "#{row} #{col} #{rt[row][col]} #{st[row][col]}"
+                    rt = put_in rt[row][col],st[row][col]
+                    IO.inspect xt
+                    xt
+                end                
          end
         rt
     end
