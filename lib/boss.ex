@@ -22,14 +22,14 @@ defmodule Boss do
             {:nodes_created} ->
                 
                 IO.puts "Pastry network init started. Waiting for nodes to join..."
-                nextnode = "n"<>Base.encode16(:crypto.hash(:md5, Integer.to_string(1) ) )
+                nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(1) ) ),32,32)
                 # ADD INIT NEXT cast here 
                 GenServer.cast(String.to_atom(nextnode),{:intialize_table_first})
 
             {:network_ring_created} ->
                 IO.puts "Pastry network created. Routing messages..."
                 n_list = Enum.to_list 1..numNodes
-                nodeid_list = Enum.map(n_list, fn(x) -> "n"<>Base.encode16(:crypto.hash(:md5, Integer.to_string(x) ) ) end)
+                nodeid_list = Enum.map(n_list, fn(x) -> "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
                
                 Enum.map(nodeid_list, fn(x) -> GenServer.cast(String.to_atom(x),{:create_n_requests}) end)
 

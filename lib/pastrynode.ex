@@ -2,7 +2,7 @@ defmodule PastryNode do
     use GenServer
     def start_link(x,nodes,numRequests) do
     input_srt = Integer.to_string(x)
-    nodeid = Base.encode16(:crypto.hash(:md5, input_srt))
+    nodeid = String.slice(Base.encode16(:crypto.hash(:sha256, input_srt)),32,32)
     GenServer.start_link(__MODULE__, {nodeid,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
@@ -210,12 +210,12 @@ defmodule PastryNode do
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
         
-        if(small_size > 16) do
-            small_leaf = Enum.slice(small_leaf, small_size-16, 16) 
+        if(small_size > 8) do
+            small_leaf = Enum.slice(small_leaf, small_size-8, 8) 
             
         end
-        if(large_size > 16) do
-            large_leaf = Enum.slice(large_leaf, large_size-16, 16) 
+        if(large_size > 8) do
+            large_leaf = Enum.slice(large_leaf, large_size-8, 8) 
         end
 
         leaf = small_leaf ++ [selfid] ++ large_leaf
@@ -293,8 +293,7 @@ defmodule PastryNode do
 
     def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
         if(num_created < req)do
-            key = Base.encode16(:crypto.hash(:md5, :crypto.strong_rand_bytes(50)))
-            #IO.puts key
+            key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
             next_hop = route_lookup(key,leaf,routetable,selfid)
             if next_hop != nil do
                 GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})
