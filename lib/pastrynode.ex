@@ -2,7 +2,7 @@ defmodule PastryNode do
     use GenServer
     def start_link(x,nodes,numRequests) do
     input_srt = Integer.to_string(x)
-    nodeid = String.slice(Base.encode16(:crypto.hash(:sha256, input_srt)),32,32)
+    nodeid = Base.encode16(:crypto.hash(:md5, input_srt))
     GenServer.start_link(__MODULE__, {nodeid,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
@@ -293,7 +293,8 @@ defmodule PastryNode do
 
     def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
         if(num_created < req)do
-            key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
+            key = Base.encode16(:crypto.hash(:md5, :crypto.strong_rand_bytes(50)))
+            IO.puts key
             next_hop = route_lookup(key,leaf,routetable,selfid)
             if next_hop != nil do
                 GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})

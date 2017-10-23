@@ -14,7 +14,8 @@ defmodule Listner do
         numstarted = numstarted+1
         if numnodes > numstarted do
             #IO.puts "#{numstarted} nodes joined pastry ring."
-            nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(numstarted+1) ) ),32,32)
+            
+            nextnode = "n"<>Base.encode16(:crypto.hash(:md5, Integer.to_string(numstarted+1) ) )
             # ADD INIT NEXT cast here 
             GenServer.cast(String.to_atom(nextnode),{:intialize_table,lastnodeid})
         else
