@@ -98,10 +98,6 @@ defmodule PastryNode do
     def handle_cast({:intialize_table_first},{selfid,leaf,routetable,req,num_created})do
         selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
         
-        # rows = Enum.to_list 0..31
-        # for row <- rows do
-            
-        # end
 
                 routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
                 routetable = put_in routetable[1][Enum.at(selflist,1)], selfid
@@ -144,6 +140,7 @@ defmodule PastryNode do
 
 
     def handle_cast({:join, incoming_node ,path_count},{selfid,leaf,routetable,req,num_created}) do
+        #IO.puts "JOin MSG Recieved"
         path_count=path_count+1
         GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
        
@@ -152,11 +149,11 @@ defmodule PastryNode do
         if next_hop == selfid do
             next_hop = nil
         end
+        
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-           
-            #IO.puts "Sending leaf table"
+            #Process.sleep(500)
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
         end
@@ -164,6 +161,7 @@ defmodule PastryNode do
     end
 
     def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
+      
         path_count=path_count+1
         GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
         
@@ -175,8 +173,7 @@ defmodule PastryNode do
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-           
-            IO.puts "Sending leaf table"
+            #Process.sleep(500)
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
@@ -218,7 +215,7 @@ defmodule PastryNode do
             
         end
         if(large_size > 8) do
-            large_leaf = Enum.slice(large_leaf, large_size-8, 8) 
+            large_leaf = Enum.slice(large_leaf, 0, 8) 
         end
 
         leaf = small_leaf ++ [selfid] ++ large_leaf
@@ -229,7 +226,6 @@ defmodule PastryNode do
         
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
-        
         return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:updatert,routetable,selfid}) end)
         
         return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
@@ -282,7 +278,7 @@ defmodule PastryNode do
             
         end
         if(large_size > 8) do
-            large_leaf = Enum.slice(large_leaf, large_size-8,8) 
+            large_leaf = Enum.slice(large_leaf, 0,8) 
         end
 
         leaf = small_leaf ++ [selfid] ++ large_leaf
