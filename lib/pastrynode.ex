@@ -210,12 +210,12 @@ defmodule PastryNode do
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
         
-        if(small_size > 8) do
-            small_leaf = Enum.slice(small_leaf, small_size-8, 8) 
+        if(small_size > 16) do
+            small_leaf = Enum.slice(small_leaf, small_size-16, 16) 
             
         end
-        if(large_size > 8) do
-            large_leaf = Enum.slice(large_leaf, 0, 8) 
+        if(large_size > 16) do
+            large_leaf = Enum.slice(large_leaf, 0, 16) 
         end
 
         leaf = small_leaf ++ [selfid] ++ large_leaf
@@ -273,12 +273,12 @@ defmodule PastryNode do
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
         
-        if(small_size > 8) do
-            small_leaf = Enum.slice(small_leaf, small_size-8,8) 
+        if(small_size > 16) do
+            small_leaf = Enum.slice(small_leaf, small_size-16,16) 
             
         end
-        if(large_size > 8) do
-            large_leaf = Enum.slice(large_leaf, 0,8) 
+        if(large_size > 16) do
+            large_leaf = Enum.slice(large_leaf, 0,16) 
         end
 
         leaf = small_leaf ++ [selfid] ++ large_leaf
