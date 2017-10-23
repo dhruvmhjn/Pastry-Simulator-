@@ -21,13 +21,13 @@ defmodule Boss do
             
             {:nodes_created} ->
                 
-                IO.puts "Nodes created, network init started."
+                IO.puts "Nodes created, Pastry network init started."
                 nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(1) ) ),32,32)
                 # ADD INIT NEXT cast here 
                 GenServer.cast(String.to_atom(nextnode),{:intialize_table_first})
 
             {:network_ring_created} ->
-                IO.puts "Network ring created."
+                IO.puts "Pastry network created."
                 n_list = Enum.to_list 1..numNodes
                 nodeid_list = Enum.map(n_list, fn(x) -> "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
                
