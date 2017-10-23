@@ -26,7 +26,6 @@ defmodule Boss do
                 # ADD INIT NEXT cast here 
                 GenServer.cast(String.to_atom(nextnode),{:intialize_table_first})
 
-
             {:network_ring_created} ->
                 IO.puts "Network ring creattion msg recieved."
                 n_list = Enum.to_list 1..numNodes
