@@ -1,21 +1,19 @@
-# Project3
+# Project-3
 
-**TODO: Add description**
+  
+Team Members:
+  1) Dhruv Mahajan, UFID: 42111994
+  2) Ashvini Patel, UFID: 47949297
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `project3` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:project3, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/project3](https://hexdocs.pm/project3).
+What is working:
+Implemented the full project brief. 
+  The pastry network configuration constants are as follows:
+  
+  b=4 i.e. node id's are in base 16 (2^b)
+  l=32 i.e size of leaf set
+  The routing table has 16 columns with upto 32 rows.
+  
+  Input/Output
+  Input format is the same as specified. (./project3 numNodes, )
+  We output 3 lines for 
 
