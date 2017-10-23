@@ -176,7 +176,7 @@ defmodule PastryNode do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
            
-            #IO.puts "Sending leaf table"
+            IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
