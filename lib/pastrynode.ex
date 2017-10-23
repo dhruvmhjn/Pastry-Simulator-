@@ -294,7 +294,7 @@ defmodule PastryNode do
     def handle_cast({:create_n_requests},{selfid,leaf,routetable,req,num_created}) do
         if(num_created < req)do
             key = Base.encode16(:crypto.hash(:md5, :crypto.strong_rand_bytes(50)))
-            IO.puts key
+            #IO.puts key
             next_hop = route_lookup(key,leaf,routetable,selfid)
             if next_hop != nil do
                 GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})
