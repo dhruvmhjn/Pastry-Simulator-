@@ -209,8 +209,9 @@ defmodule PastryNode do
         merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
 
-        small_leaf = Enum.slice(merge_leaf,0..centre-1)
-        large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
+        {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
+        # small_leaf = Enum.slice(merge_leaf,0..centre-1)
+        # large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
 
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
