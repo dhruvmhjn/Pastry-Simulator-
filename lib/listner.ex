@@ -28,7 +28,11 @@ defmodule Listner do
         delivery_msgs_recieved = delivery_msgs_recieved + 1
         #IO.puts "hop counter: #{hop_counter}, No of hops for current: #{no_of_hops}"        
 <<<<<<< HEAD
+<<<<<<< HEAD
         IO.puts "delivery msgs recieved: #{delivery_msgs_recieved}"
+=======
+        #IO.puts "delivery msgs recieved: #{hop_msgs_recieved}"
+>>>>>>> d7bb4d954851b5d892370971a25738961947d4a6
 =======
         #IO.puts "delivery msgs recieved: #{hop_msgs_recieved}"
 >>>>>>> d7bb4d954851b5d892370971a25738961947d4a6
