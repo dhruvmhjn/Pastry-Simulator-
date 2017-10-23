@@ -10,29 +10,27 @@ defmodule Listner do
         {:ok,{numrequests,numnodes,0,0,0}}
     end
 
-    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
+    def handle_cast({:stated_s,lastnodeid},{numrequests,numnodes,numstarted,hop_counter,delivery_msgs_recieved}) do
         numstarted = numstarted+1
         if numnodes > numstarted do
-            IO.puts "num in ring: #{numstarted}"
+            IO.puts "#{numstarted} nodes in network ring."
             nextnode = "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(numstarted+1) ) ),32,32)
             # ADD INIT NEXT cast here 
             GenServer.cast(String.to_atom(nextnode),{:intialize_table,lastnodeid})
         else 
             send(Process.whereis(:boss),{:network_ring_created})
         end
-        {:noreply,{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}}
+        {:noreply,{numrequests,numnodes,numstarted,hop_counter,delivery_msgs_recieved}}
     end
 
-    def handle_cast({:delivery,no_of_hops},{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}) do
-        hop_msgs_recieved = hop_msgs_recieved + 1
+    def handle_cast({:delivery,no_of_hops},{numrequests,numnodes,numstarted,hop_counter,delivery_msgs_recieved}) do
+        delivery_msgs_recieved = delivery_msgs_recieved + 1
         #IO.puts "hop counter: #{hop_counter}, No of hops for current: #{no_of_hops}"        
         #IO.puts "delivery msgs recieved: #{hop_msgs_recieved}"
         hop_counter = hop_counter + no_of_hops
-        if (hop_msgs_recieved == (numrequests*numnodes)) do
+        if (delivery_msgs_recieved == (numrequests*numnodes)) do
             send(Process.whereis(:boss),{:all_requests_served,hop_counter})
-        
-        end
-            
-        {:noreply,{numrequests,numnodes,numstarted,hop_counter,hop_msgs_recieved}}
+        end  
+        {:noreply,{numrequests,numnodes,numstarted,hop_counter,delivery_msgs_recieved}}
     end
 end
