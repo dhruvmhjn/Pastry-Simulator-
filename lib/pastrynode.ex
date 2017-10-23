@@ -185,8 +185,14 @@ defmodule PastryNode do
 
      def handle_cast({:routing_table,new_route_table,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
         #dsa
-        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
-        common_len = String.length common
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
+        
+        
         rows = Enum.to_list 0..31        
 
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(new_route_table[row],routetable[row]) else routetable[row] end end
@@ -218,8 +224,12 @@ defmodule PastryNode do
     
     def handle_call({:update_route_table,incoming_routetable,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
         
-        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
-        common_len = String.length common
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
         rows = Enum.to_list 0..31        
 
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
@@ -231,8 +241,12 @@ defmodule PastryNode do
 
     def handle_call({:update_routeleaf_table,incoming_routetable,incoming_leaf,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
        
-        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
-        common_len = String.length common
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
         rows = Enum.to_list 0..31        
 
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
