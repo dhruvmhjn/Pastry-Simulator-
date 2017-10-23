@@ -19,9 +19,6 @@ defmodule PastryNode do
         #check leaf set
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
-            if route_to == selfid do
-                route_to = nil
-            end
         else #check routing table
             [{match_type, common}|_] = String.myers_difference(selfid,key)
             if match_type == :eq do
