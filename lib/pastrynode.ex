@@ -7,7 +7,9 @@ defmodule PastryNode do
     GenServer.start_link(__MODULE__, {nodeid,b,nodes,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
-    def init({selfid,b,nodes,numRequests}) do       
+    def init({selfid,b,nodes,numRequests}) do 
+        b
+        nodes      
 
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
         #entries in routetable to point to self
@@ -22,12 +24,17 @@ defmodule PastryNode do
 
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
-            if route_to = selfid do
+            if route_to == selfid do
                 route_to = nil
             end
         else
-            [{:eq, common}|_] = String.myers_difference(selfid,key)
-            common_len = String.length common
+            [{match_type, common}|_] = String.myers_difference(selfid,key)
+            if match_type == :eq do
+                common_len = String.length common
+            else
+                common_len = 0
+            end
+                
             {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
              if (routetable[common_len][next_digit] != nil) do
                 route_to = routetable[common_len][next_digit] 
@@ -95,7 +102,7 @@ defmodule PastryNode do
     
             #last lines
             #GenServer.cast(:listner,{:stated_s,nodeid})
-        GenServer.cast(hostid,{:join,selfid,0})
+        GenServer.cast(String.to_atom("n"<>hostid),{:join,selfid,0})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
@@ -142,9 +149,9 @@ defmodule PastryNode do
 
 
 
-    def handle_cast({:join,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
+    def handle_cast({:join, incoming_node ,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
-        GenServer.cast(incoming_node,{:routing_table,routetable,selfid,path_count})
+        GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
        
         #sincoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
@@ -154,7 +161,7 @@ defmodule PastryNode do
         else
             Process.sleep(500)
             IO.puts "Sending leaf table"
-            GenServer.cast(incoming_node,{:leaf_table,leaf,selfid,path_count})
+            GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
@@ -162,7 +169,7 @@ defmodule PastryNode do
 
     def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
-        GenServer.cast(incoming_node,{:routing_table,routetable,selfid,path_count})
+        GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
         #incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
@@ -171,15 +178,21 @@ defmodule PastryNode do
         else
             Process.sleep(500)
             IO.puts "Sending leaf table"
-            GenServer.cast(incoming_node,{:leaf_table,leaf,selfid,path_count})
+            GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
      def handle_cast({:routing_table,new_route_table,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
         #dsa
-        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
-        common_len = String.length common
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
+        
+        
         rows = Enum.to_list 0..31        
 
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(new_route_table[row],routetable[row]) else routetable[row] end end
@@ -229,13 +242,29 @@ defmodule PastryNode do
     
     def handle_call({:update_route_table,incoming_routetable,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
         
-        {:reply,"ok",{selfid,leaf,routetable,req,num_created}} 
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
+        rows = Enum.to_list 0..31        
+
+        res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
+        res_map = Matrix.from_list(res)  
+
+
+        {:reply,"ok",{selfid,leaf,res_map,req,num_created}} 
     end
 
     def handle_call({:update_routeleaf_table,incoming_routetable,incoming_leaf,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
        
-        [{:eq, common}|_] = String.myers_difference(selfid,sender_nodeid)
-        common_len = String.length common
+        [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
+        if match_type == :eq do
+            common_len = String.length common
+        else
+            common_len = 0
+        end
         rows = Enum.to_list 0..31        
 
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end

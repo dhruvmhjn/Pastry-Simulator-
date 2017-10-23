@@ -39,7 +39,7 @@ defmodule Boss do
 
                 #a = System.system_time(:millisecond)
                 
-            {:all_requersts_served,b} ->
+            {:all_requests_served,b} ->
                 avg = b/(numNodes*numRequests)
                 IO.puts "Avg Hops: #{avg}"
                 :init.stop                
