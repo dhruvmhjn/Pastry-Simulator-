@@ -231,9 +231,9 @@ defmodule PastryNode do
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
         
-        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom(("n"<>x)),{:update_route_table,routetable,selfid}) end)
+        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_route_table,routetable,selfid}) end)
         
-        return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom(("n"<>x)),{:update_routeleaf_table,routetable,leaf,selfid}) end)
+        return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
 
         #ADD RETURN list check here
         GenServer.cast(:listner,{:stated_s,selfid})
@@ -313,7 +313,7 @@ defmodule PastryNode do
             end    
             num_created = num_created+1
             Process.sleep(1000)
-            GenServer.cast(selfid,{:create_n_requests})
+            GenServer.cast(String.to_atom("n"<>selfid),{:create_n_requests})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
