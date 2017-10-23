@@ -205,12 +205,20 @@ defmodule PastryNode do
 
      def handle_cast({:leaf_table,new_leaf_set,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
             
+        IO.inspect new_leaf_set
+        IO.inspect leaf
+
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
         merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
 
         small_leaf = Enum.slice(merge_leaf,0..centre-1)
+        IO.inspect small_leaf
+        
         large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
+
+        IO.inspect large_leaf
+        IO.puts "small and lage"
 
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
@@ -228,10 +236,12 @@ defmodule PastryNode do
         rt_list = List.flatten(Matrix.to_list(routetable))
         route_table_list = Enum.dedup(Enum.sort(rt_list))
         route_table_list = List.delete(route_table_list,selfid)
+        
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
         IO.inspect route_table_list
         IO.inspect leaf_list
+        IO.inspect leaf
         #GenServer.c
         #saddsas = GenServer.call(String.to_atom("n"<>Enum.at(route_table_list,0)),{:update_route_table,routetable,selfid})
 
