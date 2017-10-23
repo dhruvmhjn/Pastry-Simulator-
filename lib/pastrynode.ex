@@ -230,8 +230,12 @@ defmodule PastryNode do
         route_table_list = List.delete(route_table_list,selfid)
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
-        
-        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_route_table,routetable,selfid}) end)
+        IO.inspect route_table_list
+        #GenServer.c
+        #saddsas = GenServer.call(String.to_atom("n"<>Enum.at(route_table_list,0)),{:update_route_table,routetable,selfid})
+
+        #IO.puts "SSDD"
+        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:updatert,routetable,selfid}) end)
         
         return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
 
@@ -240,7 +244,7 @@ defmodule PastryNode do
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
     
-    def handle_call({:update_route_table,incoming_routetable,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
+    def handle_call({:updatert,incoming_routetable,sender_nodeid},from,{selfid,leaf,routetable,req,num_created}) do
         
         [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
         if match_type == :eq do
@@ -257,7 +261,7 @@ defmodule PastryNode do
         {:reply,"ok",{selfid,leaf,res_map,req,num_created}} 
     end
 
-    def handle_call({:update_routeleaf_table,incoming_routetable,new_leaf_set,sender_nodeid},{selfid,leaf,routetable,req,num_created}) do
+    def handle_call({:update_routeleaf_table,incoming_routetable,new_leaf_set,sender_nodeid},from,{selfid,leaf,routetable,req,num_created}) do
        
         [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
         if match_type == :eq do
