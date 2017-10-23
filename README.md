@@ -38,5 +38,5 @@ What is working:
   10,000        10                3.03
   50,000        5
 
-Largest network: 50,000 pastry nodes sending 5 requests each. This is beacuse of memory limitation on the systems avalaibe (16GB). If a machine with more memory is avaliable, this code 
+Largest network: 50,000 pastry nodes sending 10 requests each. This is beacuse of memory limitation on the systems avalaibe (16GB). If a machine with more memory is avaliable, this code can scale to many more nodes.
 
