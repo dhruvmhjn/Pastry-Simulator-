@@ -1,6 +1,6 @@
 defmodule PastryNode do
     use GenServer
-    def start_link(x,nodes,numRequests) do
+    def start_link(x,_,numRequests) do
     input_srt = Integer.to_string(x)
     nodeid = Base.encode16(:crypto.hash(:md5, input_srt))
     GenServer.start_link(__MODULE__, {nodeid,numRequests}, name: String.to_atom("n#{nodeid}"))    
@@ -179,7 +179,7 @@ defmodule PastryNode do
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
 
-     def handle_cast({:routing_table,new_route_table,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
+     def handle_cast({:routing_table,new_route_table,sender_nodeid,_},{selfid,leaf,routetable,req,num_created}) do
         #dsa
         [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
         if match_type == :eq do
@@ -199,10 +199,10 @@ defmodule PastryNode do
     end
 
 
-     def handle_cast({:leaf_table,new_leaf_set,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
+     def handle_cast({:leaf_table,new_leaf_set,_,_},{selfid,leaf,routetable,req,num_created}) do
             
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
-        merge_size = Enum.count(merge_leaf)
+        # merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
 
         {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
@@ -226,16 +226,16 @@ defmodule PastryNode do
         
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
-        return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:updatert,routetable,selfid}) end)
+        Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:updatert,routetable,selfid}) end)
         
-        return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
+        Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
 
         #ADD RETURN list check here
         GenServer.cast(:listner,{:stated_s,selfid})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
     
-    def handle_call({:updatert,incoming_routetable,sender_nodeid},from,{selfid,leaf,routetable,req,num_created}) do
+    def handle_call({:updatert,incoming_routetable,sender_nodeid},_,{selfid,leaf,routetable,req,num_created}) do
         
         [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
         if match_type == :eq do
@@ -252,7 +252,7 @@ defmodule PastryNode do
         {:reply,"ok",{selfid,leaf,res_map,req,num_created}} 
     end
 
-    def handle_call({:update_routeleaf_table,incoming_routetable,new_leaf_set,sender_nodeid},from,{selfid,leaf,routetable,req,num_created}) do
+    def handle_call({:update_routeleaf_table,incoming_routetable,new_leaf_set,sender_nodeid},_,{selfid,leaf,routetable,req,num_created}) do
        
         [{match_type, common}|_] = String.myers_difference(selfid,sender_nodeid)
         if match_type == :eq do
@@ -266,7 +266,7 @@ defmodule PastryNode do
         res_map = Matrix.from_list(res)  
         
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
-        merge_size = Enum.count(merge_leaf)
+        # merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
         {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
        
