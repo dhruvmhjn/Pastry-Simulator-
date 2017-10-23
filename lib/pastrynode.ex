@@ -1,33 +1,28 @@
 defmodule PastryNode do
     use GenServer
     def start_link(x,nodes,numRequests) do
-    b=4
     input_srt = Integer.to_string(x)
     nodeid = String.slice(Base.encode16(:crypto.hash(:sha256, input_srt)),32,32)
-    GenServer.start_link(__MODULE__, {nodeid,b,nodes,numRequests}, name: String.to_atom("n#{nodeid}"))    
+    GenServer.start_link(__MODULE__, {nodeid,numRequests}, name: String.to_atom("n#{nodeid}"))    
     end
 
-    def init({selfid,b,nodes,numRequests}) do 
-        b
-        nodes      
-
+    def init({selfid,numRequests}) do        
         routetable = Matrix.from_list([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]])
-        #entries in routetable to point to self
         {:ok, {selfid,[selfid],routetable,numRequests,0}}
     end
-
 
     def route_lookup(key, leaf, routetable , selfid ) do
         {keyval,_} = Integer.parse(key,16)
         {firstleaf,_} = Integer.parse(List.first(leaf),16)
         {lastleaf,_} = Integer.parse(List.last(leaf),16)
 
+        #check leaf set
         if ((keyval >= firstleaf) &&(keyval <= lastleaf)) do
             route_to = Enum.min_by(leaf, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
             if route_to == selfid do
                 route_to = nil
             end
-        else
+        else #check routing table
             [{match_type, common}|_] = String.myers_difference(selfid,key)
             if match_type == :eq do
                 common_len = String.length common
@@ -38,13 +33,11 @@ defmodule PastryNode do
             {next_digit,_} = Integer.parse(String.slice(key,common_len,1),16)
              if (routetable[common_len][next_digit] != nil) do
                 route_to = routetable[common_len][next_digit] 
-             else
+             else #check all other routing table enteries 
                 rtl = Matrix.to_list(routetable)
                 routelist = Enum.slice(rtl,common_len,31)
                 routelist = List.flatten(routelist)
                 routelist = routelist ++ leaf 
-                #never empty, remove duplicates
-
                 if (!Enum.empty?(routelist))do
                     candidate = Enum.min_by(routelist, fn(x) -> Kernel.abs(elem(Integer.parse(x,16),0) - keyval) end)
                     #compare candidate with self
@@ -101,7 +94,6 @@ defmodule PastryNode do
                 routetable = put_in routetable[31][Enum.at(selflist,31)], selfid
     
             #last lines
-            #GenServer.cast(:listner,{:stated_s,nodeid})
         GenServer.cast(String.to_atom("n"<>hostid),{:join,selfid,0})
     {:noreply,{selfid,leaf,routetable,req,num_created}}
     end
@@ -109,6 +101,11 @@ defmodule PastryNode do
     def handle_cast({:intialize_table_first},{selfid,leaf,routetable,req,num_created})do
         selflist = Enum.map String.codepoints(selfid), fn(x) -> elem(Integer.parse(x,16),0) end
         
+        # rows = Enum.to_list 0..31
+        # for row <- rows do
+            
+        # end
+
                 routetable = put_in routetable[0][Enum.at(selflist,0)], selfid
                 routetable = put_in routetable[1][Enum.at(selflist,1)], selfid
                 routetable = put_in routetable[2][Enum.at(selflist,2)], selfid
@@ -153,13 +150,12 @@ defmodule PastryNode do
         path_count=path_count+1
         GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
        
-        #sincoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            #Process.sleep(500)
+           
             #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
@@ -170,13 +166,13 @@ defmodule PastryNode do
     def handle_cast({:join_route,incoming_node,path_count},{selfid,leaf,routetable,req,num_created}) do
         path_count=path_count+1
         GenServer.cast(String.to_atom("n"<>incoming_node),{:routing_table,routetable,selfid,path_count})
-        #incoming_node_hex = String.slice(Atom.to_string(incoming_node),1..-1)
+        
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            #Process.sleep(500)
+           
             #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
@@ -205,21 +201,11 @@ defmodule PastryNode do
 
      def handle_cast({:leaf_table,new_leaf_set,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
             
-        #IO.inspect new_leaf_set
-        #IO.inspect leaf
-
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
         merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
 
         {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
-        # small_leaf = Enum.slice(merge_leaf,0..centre-1)
-        # large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
-        #IO.inspect small_leaf
-        #IO.inspect large_leaf
-
-        #IO.inspect large_leaf
-        #IO.puts "small and lage"
 
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
@@ -240,13 +226,7 @@ defmodule PastryNode do
         
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
-        #IO.inspect route_table_list
-        #IO.inspect leaf_list
-        #IO.inspect leaf
-        #GenServer.c
-        #saddsas = GenServer.call(String.to_atom("n"<>Enum.at(route_table_list,0)),{:update_route_table,routetable,selfid})
-
-        #IO.puts "SSDD"
+        
         return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:updatert,routetable,selfid}) end)
         
         return_list_2 = Enum.map(leaf_list, fn(x) -> GenServer.call(String.to_atom("n"<>x),{:update_routeleaf_table,routetable,leaf,selfid}) end)
@@ -286,15 +266,11 @@ defmodule PastryNode do
         res = Enum.map rows, fn(row) -> if (row<= common_len) do Map.merge(incoming_routetable[row],routetable[row]) else routetable[row] end end
         res_map = Matrix.from_list(res)  
         
-        #ADD LEAF LOGIC HERE
-
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
         merge_size = Enum.count(merge_leaf)
         centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
         {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
-        # small_leaf = Enum.slice(merge_leaf,0..centre-1)
-        # large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
-
+       
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
         
