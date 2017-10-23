@@ -159,7 +159,7 @@ defmodule PastryNode do
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            Process.sleep(500)
+            #Process.sleep(500)
             #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
@@ -176,7 +176,7 @@ defmodule PastryNode do
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
-            Process.sleep(500)
+            #Process.sleep(500)
             #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
