@@ -160,7 +160,7 @@ defmodule PastryNode do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
             Process.sleep(500)
-            IO.puts "Sending leaf table"
+            #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
     
         end
@@ -205,8 +205,8 @@ defmodule PastryNode do
 
      def handle_cast({:leaf_table,new_leaf_set,sender_nodeid,path_count},{selfid,leaf,routetable,req,num_created}) do
             
-        IO.inspect new_leaf_set
-        IO.inspect leaf
+        #IO.inspect new_leaf_set
+        #IO.inspect leaf
 
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
         merge_size = Enum.count(merge_leaf)
@@ -240,9 +240,9 @@ defmodule PastryNode do
         
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
-        IO.inspect route_table_list
-        IO.inspect leaf_list
-        IO.inspect leaf
+        #IO.inspect route_table_list
+        #IO.inspect leaf_list
+        #IO.inspect leaf
         #GenServer.c
         #saddsas = GenServer.call(String.to_atom("n"<>Enum.at(route_table_list,0)),{:update_route_table,routetable,selfid})
 
