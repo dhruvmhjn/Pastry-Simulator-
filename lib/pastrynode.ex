@@ -152,6 +152,9 @@ defmodule PastryNode do
        
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
+        if next_hop == selfid do
+            next_hop = nil
+        end
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
@@ -169,6 +172,9 @@ defmodule PastryNode do
         
         #NEXT HOP for incoming node
         next_hop = route_lookup(incoming_node,leaf,routetable,selfid)
+        if next_hop == selfid do
+            next_hop = nil
+        end
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
@@ -295,6 +301,9 @@ defmodule PastryNode do
         if(num_created < req)do
             key = String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(:rand.uniform(99999999)) )),32,32)
             next_hop = route_lookup(key,leaf,routetable,selfid)
+            if next_hop == selfid do
+                next_hop = nil
+            end
             if next_hop != nil do
                 GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,"this is the msg",0})
 
@@ -313,7 +322,9 @@ defmodule PastryNode do
     def handle_cast({:route_message,key,msg,hop_count},{selfid,leaf,routetable,req,num_created}) do
         hop_count = hop_count + 1
         next_hop = route_lookup(key,leaf,routetable,selfid)
-        
+        if next_hop == selfid do
+            next_hop = nil
+        end
         if next_hop != nil do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,msg,hop_count})
         
