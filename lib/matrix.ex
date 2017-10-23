@@ -1,3 +1,11 @@
+# Reference:
+# matrix.ex is a module avalaibe on the internet which provides a 2-D array implematation for elixir.
+# This is used in the project to store and easily access Route tables in pastry nodes.
+
+# Code avalaible at: http://blog.danielberkompas.com/2016/04/23/multidimensional-arrays-in-elixir.html
+# Author: Daniel K.
+# Used by: Dhruv Mahajan, Ashvini Patel.
+
 defmodule Matrix do
     @moduledoc """
     Helpers for working with multidimensional lists, also called matrices.
