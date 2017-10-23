@@ -194,10 +194,28 @@ defmodule PastryNode do
             
         merge_leaf = Enum.dedup(Enum.sort(new_leaf_set ++ leaf))
         merge_size = Enum.count(merge_leaf)
-                
+        centre = Enum.find_index(merge_leaf, fn(x) -> x == selfid end)
 
-        route_table_list = ["AAA"]
-        leaf_list = ["BB"]
+        small_leaf = Enum.slice(merge_leaf,0..centre-1)
+        large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
+
+        small_size =  Enum.count(small_leaf)
+        large_size =  Enum.count(large_leaf)
+        
+        if(small_size > 16) do
+            small_leaf = Enum.slice(small_leaf, small_size-16, 16) 
+            
+        end
+        if(large_size > 16) do
+            large_leaf = Enum.slice(large_leaf, large_size-16, 16) 
+        end
+
+        leaf = small_leaf ++ [selfid] ++ large_leaf
+
+        rt_list = List.flatten(Matrix.to_list(routetable))
+        route_table_list = Enum.dedup(Enum.sort(rt_list))
+        route_table_list = List.delete(route_table_list,selfid)
+        leaf_list = leaf
         #Create variable combined list
         
         return_list_1 = Enum.map(route_table_list, fn(x) -> GenServer.call(String.to_atom(("n"<>x)),{:update_route_table,routetable,selfid}) end)
