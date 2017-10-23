@@ -231,6 +231,7 @@ defmodule PastryNode do
         leaf_list = List.delete(leaf,selfid)
         #Create variable combined list
         IO.inspect route_table_list
+        IO.inspect leaf_list
         #GenServer.c
         #saddsas = GenServer.call(String.to_atom("n"<>Enum.at(route_table_list,0)),{:update_route_table,routetable,selfid})
 
