@@ -177,7 +177,7 @@ defmodule PastryNode do
             GenServer.cast(String.to_atom("n#{next_hop}"),{:join_route,incoming_node,path_count})            
         else
             Process.sleep(500)
-            IO.puts "Sending leaf table"
+            #IO.puts "Sending leaf table"
             GenServer.cast(String.to_atom("n"<>incoming_node),{:leaf_table,leaf,selfid,path_count})
         end
     {:noreply,{selfid,leaf,routetable,req,num_created}}
@@ -335,10 +335,11 @@ defmodule PastryNode do
     end
 
     def handle_cast({:route_message,key,msg,hop_count},{selfid,leaf,routetable,req,num_created}) do
+        hop_count = hop_count + 1
         next_hop = route_lookup(key,leaf,routetable,selfid)
         
         if next_hop != nil do
-            GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,msg,hop_count+1})
+            GenServer.cast(String.to_atom("n#{next_hop}"),{:route_message,key,msg,hop_count})
         
         else
             GenServer.cast(:listner,{:delivery,hop_count})

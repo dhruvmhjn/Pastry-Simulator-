@@ -31,7 +31,7 @@ defmodule Boss do
                 IO.puts "Network ring creattion msg recieved."
                 n_list = Enum.to_list 1..numNodes
                 nodeid_list = Enum.map(n_list, fn(x) -> "n"<>String.slice(Base.encode16(:crypto.hash(:sha256, Integer.to_string(x) ) ),32,32) end)
-                IO.inspect ( Enum.at(nodeid_list,0))
+                #IO.inspect ( Enum.at(nodeid_list,0))
                 
                 #CAST initial message to everyone 
                 
