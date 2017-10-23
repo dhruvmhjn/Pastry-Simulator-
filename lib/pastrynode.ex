@@ -215,11 +215,11 @@ defmodule PastryNode do
         {small_leaf, large_leaf} = Enum.split(List.delete(merge_leaf,selfid),centre)
         # small_leaf = Enum.slice(merge_leaf,0..centre-1)
         # large_leaf = Enum.slice(merge_leaf, centre+1..merge_size)
-        IO.inspect small_leaf
-        IO.inspect large_leaf
+        #IO.inspect small_leaf
+        #IO.inspect large_leaf
 
-        IO.inspect large_leaf
-        IO.puts "small and lage"
+        #IO.inspect large_leaf
+        #IO.puts "small and lage"
 
         small_size =  Enum.count(small_leaf)
         large_size =  Enum.count(large_leaf)
