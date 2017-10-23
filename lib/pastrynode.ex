@@ -40,7 +40,7 @@ defmodule PastryNode do
                 route_to = routetable[common_len][next_digit] 
              else
                 rtl = Matrix.to_list(routetable)
-                [_|routelist] = Enum.chunk(rtl,common_len)
+                routelist = Enum.slice(rtl,common_len,31)
                 routelist = List.flatten(routelist)
                 routelist = routelist ++ leaf 
                 #never empty, remove duplicates
