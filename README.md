@@ -7,9 +7,7 @@ Reference:
   Author: Daniel K.
   Used by: Dhruv Mahajan, Ashvini Patel.
   
-Team Members:
-  1) Dhruv Mahajan, UFID: 42111994
-  2) Ashvini Patel, UFID: 47949297
+
 
 What is working:
   Implemented the full project brief. 
